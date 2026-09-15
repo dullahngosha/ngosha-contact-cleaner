@@ -5,8 +5,8 @@ import android.content.ContentProviderOperation
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.widget.Button
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,105 +14,15 @@ import androidx.core.content.ContextCompat
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
-    data class Entry(val rawId: Long, val contactId: Long, val name: String, val number: String, val normalized: String)
-    private var duplicateGroups: List<List<Entry>> = emptyList()
-    private lateinit var status: TextView
-    private lateinit var details: TextView
-    private lateinit var clean: Button
-    private lateinit var totalText: TextView
-    private lateinit var duplicateText: TextView
-    private lateinit var deletedText: TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        status = findViewById(R.id.statusText); details = findViewById(R.id.detailsText)
-        clean = findViewById(R.id.cleanButton); totalText = findViewById(R.id.totalText)
-        duplicateText = findViewById(R.id.duplicateText); deletedText = findViewById(R.id.deletedText)
-        findViewById<Button>(R.id.scanButton).setOnClickListener { ensurePermissionAndScan() }
-        clean.setOnClickListener { confirmClean() }
-    }
-
-    private fun ensurePermissionAndScan() {
-        val needed = arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
-        if (needed.all { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }) scan()
-        else ActivityCompat.requestPermissions(this, needed, 100)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) scan()
-        else status.text = "Ruhusa ya Contacts inahitajika."
-    }
-
-    private fun normalizePhone(input: String): String {
-        var n = input.filter { it.isDigit() }
-        if (n.startsWith("00255")) n = n.substring(2)
-        return when {
-            n.startsWith("255") && n.length >= 12 -> n
-            n.startsWith("0") && n.length == 10 -> "255" + n.substring(1)
-            n.length == 9 && (n.startsWith("6") || n.startsWith("7")) -> "255$n"
-            else -> n.trimStart('0')
-        }
-    }
-
-    private fun scan() {
-        status.text = "Inakagua contacts..."
-        thread {
-            val rows = mutableListOf<Entry>()
-            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID, ContactsContract.CommonDataKinds.Phone.CONTACT_ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER)
-            contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, null)?.use { c ->
-                while (c.moveToNext()) {
-                    val raw = c.getLong(0); val contact = c.getLong(1); val name = c.getString(2) ?: "Bila jina"; val number = c.getString(3) ?: continue
-                    val normalized = normalizePhone(number)
-                    if (normalized.length >= 7) rows += Entry(raw, contact, name, number, normalized)
-                }
-            }
-            val groups = rows.groupBy { it.normalized }.values.map { it.distinctBy { e -> e.rawId } }.filter { it.size > 1 }
-            duplicateGroups = groups
-            val extra = groups.sumOf { it.size - 1 }
-            val preview = groups.take(60).joinToString("\n\n") { g -> "${g.first().normalized}\n" + g.joinToString("\n") { "• ${it.name}  ${it.number}" } }
-            runOnUiThread {
-                totalText.text = "${rows.distinctBy { it.contactId }.size}\nContacts"
-                duplicateText.text = "$extra\nDuplicates"
-                status.text = if (extra == 0) "✓ Simu yako haina duplicate contacts." else "Duplicate $extra zimepatikana katika makundi ${groups.size}."
-                clean.isEnabled = extra > 0
-                details.text = if (preview.isBlank()) "Hakuna duplicates zilizopatikana." else preview
-            }
-        }
-    }
-
-    private fun confirmClean() {
-        val count = duplicateGroups.sumOf { it.size - 1 }
-        AlertDialog.Builder(this)
-            .setTitle("Uko tayari kusafisha duplicates?")
-            .setMessage("Je, umeshafanya backup ya contacts zako?\n\nNdio: bonyeza NDIO, SAFISHA.\nBado: bonyeza SIJAFANYA BACKUP BADO kisha fanya backup kwanza.\n\nApp itaacha contact moja kwa kila namba na kuondoa duplicates $count.")
-            .setNegativeButton("SIJAFANYA BACKUP BADO", null)
-            .setPositiveButton("NDIO, SAFISHA") { _, _ -> cleanDuplicates() }
-            .show()
-    }
-
-    private fun cleanDuplicates() {
-        clean.isEnabled = false
-        status.text = "Inasafisha duplicates... Tafadhali subiri."
-        thread {
-            var deleted = 0; var failed = 0
-            duplicateGroups.forEachIndexed { index, group ->
-                val keep = group.sortedWith(compareByDescending<Entry> { it.name.isNotBlank() && it.name != "Bila jina" }.thenBy { it.rawId }).first()
-                group.filter { it.rawId != keep.rawId }.forEach { duplicate ->
-                    try {
-                        val ops = arrayListOf(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI).withSelection("${ContactsContract.RawContacts._ID}=?", arrayOf(duplicate.rawId.toString())).build())
-                        contentResolver.applyBatch(ContactsContract.AUTHORITY, ops); deleted++
-                    } catch (_: Exception) { failed++ }
-                }
-                if (index % 25 == 0) runOnUiThread { status.text = "Inasafisha... kundi ${index + 1}/${duplicateGroups.size} • zimeondolewa $deleted" }
-            }
-            runOnUiThread {
-                deletedText.text = "$deleted\nZimeondolewa"
-                status.text = if (failed == 0) "✓ Imekamilika. Duplicate $deleted zimeondolewa." else "Imekamilika: $deleted zimeondolewa, $failed hazikuweza kuondolewa."
-                details.text = "Usafishaji umekamilika. Bonyeza KAGUA CONTACTS kuthibitisha hali mpya."
-                duplicateGroups = emptyList(); clean.isEnabled = false
-            }
-        }
-    }
+ data class Entry(val rawId:Long,val contactId:Long,val name:String,val number:String,val normalized:String)
+ private var groups:List<List<Entry>> = emptyList()
+ private lateinit var status:TextView; private lateinit var details:TextView; private lateinit var clean:Button
+ private lateinit var totalText:TextView; private lateinit var duplicateText:TextView; private lateinit var deletedText:TextView; private lateinit var progress:ProgressBar
+ override fun onCreate(b:Bundle?){super.onCreate(b);setContentView(R.layout.activity_main);status=findViewById(R.id.statusText);details=findViewById(R.id.detailsText);clean=findViewById(R.id.cleanButton);totalText=findViewById(R.id.totalText);duplicateText=findViewById(R.id.duplicateText);deletedText=findViewById(R.id.deletedText);progress=findViewById(R.id.progressBar);findViewById<Button>(R.id.scanButton).setOnClickListener{permission()};clean.setOnClickListener{confirm()}}
+ private fun permission(){val p=arrayOf(Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS);if(p.all{ContextCompat.checkSelfPermission(this,it)==PackageManager.PERMISSION_GRANTED})scan() else ActivityCompat.requestPermissions(this,p,10)}
+ override fun onRequestPermissionsResult(r:Int,p:Array<out String>,g:IntArray){super.onRequestPermissionsResult(r,p,g);if(r==10&&g.isNotEmpty()&&g.all{it==PackageManager.PERMISSION_GRANTED})scan() else status.text="Ruhusu Contacts ili Ngosha Cleaner ifanye kazi."}
+ private fun norm(s:String):String{var n=s.filter{it.isDigit()};if(n.startsWith("00255"))n=n.drop(2);return when{n.startsWith("255")&&n.length==12->n;n.startsWith("0")&&n.length==10->"255"+n.drop(1);n.length==9&&(n[0]=='6'||n[0]=='7')->"255$n";else->n}}
+ private fun scan(){status.text="Inachambua contacts...";progress.visibility=View.VISIBLE;progress.isIndeterminate=true;clean.isEnabled=false;thread{val a=mutableListOf<Entry>();val pr=arrayOf(ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID,ContactsContract.CommonDataKinds.Phone.CONTACT_ID,ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,ContactsContract.CommonDataKinds.Phone.NUMBER);contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,pr,null,null,null)?.use{c->while(c.moveToNext()){val num=c.getString(3)?:continue;val n=norm(num);if(n.length>=7)a+=Entry(c.getLong(0),c.getLong(1),c.getString(2)?:"Bila jina",num,n)}};groups=a.groupBy{it.normalized}.values.map{it.distinctBy{e->e.rawId}}.filter{it.size>1};val extra=groups.sumOf{it.size-1};val preview=groups.take(80).joinToString("\n\n"){x->"${x.first().name}  •  ${x.first().normalized}\n${x.size} entries zimepatikana"};runOnUiThread{progress.visibility=View.GONE;totalText.text="${a.distinctBy{it.contactId}.size}\nContacts";duplicateText.text="$extra\nDuplicates";status.text=if(extra==0)"✓ Hakuna duplicates zilizopatikana." else "Tumepata duplicates $extra katika makundi ${groups.size}. Kagua kisha safisha.";details.text=if(preview.isBlank())"Simu yako iko safi." else preview;clean.isEnabled=extra>0}}}
+ private fun confirm(){val n=groups.sumOf{it.size-1};AlertDialog.Builder(this).setTitle("Je, umeshafanya backup?").setMessage("Tumepata duplicates $n. Ngosha Cleaner itabaki na contact moja kwa kila namba.\n\nUmeshafanya backup ya contacts zako?").setNegativeButton("BADO, NITAFANYA BACKUP",null).setPositiveButton("NDIO, ENDELEA"){_,_->cleanSmart()}.show()}
+ private fun cleanSmart(){clean.isEnabled=false;progress.visibility=View.VISIBLE;progress.isIndeterminate=false;progress.max=groups.size.coerceAtLeast(1);status.text="Usafishaji umeanza...";thread{var removed=0;var failed=0;groups.forEachIndexed{i,g->val keep=g.maxWithOrNull(compareBy<Entry>{if(it.name!="Bila jina")1 else 0}.thenBy{-it.rawId})?:g.first();g.filter{it.rawId!=keep.rawId}.forEach{d->try{val op=ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI).withSelection("${ContactsContract.RawContacts._ID}=?",arrayOf(d.rawId.toString())).build();contentResolver.applyBatch(ContactsContract.AUTHORITY,arrayListOf(op));removed++}catch(_:Exception){failed++}};if(i%10==0||i==groups.lastIndex)runOnUiThread{progress.progress=i+1;val pct=((i+1)*100/groups.size.coerceAtLeast(1));status.text="Inasafisha... $pct%  •  $removed zimeondolewa"}};runOnUiThread{progress.visibility=View.GONE;deletedText.text="$removed\nZimeondolewa";status.text=if(failed==0)"✓ Imekamilika. $removed duplicates zimeondolewa." else "Imekamilika. $removed zimeondolewa, $failed hazikubadilishwa.";details.text="Usafishaji umekamilika. Bonyeza KAGUA CONTACTS kufanya verification.";groups=emptyList();clean.isEnabled=false}}}
 }
