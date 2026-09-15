@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F7F9F8">
+ <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Ngosha Contact Cleaner" android:textSize="28sp" android:textStyle="bold" android:textColor="#0B3D2E" />
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Safisha namba zilizojirudia bila kupoteza contact yako ya msingi." android:textSize="16sp" android:textColor="#4B5563" />
+  <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp" android:padding="18dp" android:background="#FFFFFF" android:text="Bonyeza SCAN DUPLICATES kuanza." android:textSize="17sp" android:textColor="#111827" />
+  <Button android:id="@+id/scanButton" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="24dp" android:text="SCAN DUPLICATES" />
+  <Button android:id="@+id/cleanButton" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="12dp" android:text="CLEAN DUPLICATES" android:enabled="false" />
+  <TextView android:id="@+id/detailsText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:textSize="14sp" android:textColor="#374151" />
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="Ngosha Multimedia • v1.0" android:gravity="center" android:textColor="#6B7280" />
+ </LinearLayout>
+</ScrollView>
