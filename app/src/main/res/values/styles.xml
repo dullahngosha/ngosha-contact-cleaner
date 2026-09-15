@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.NgoshaCleaner" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#0B3D2E</item>
+        <item name="colorPrimaryVariant">#072A20</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>
