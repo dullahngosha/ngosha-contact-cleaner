@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#F4F7F5">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:background="#F4F7F5">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="22dp" android:background="@drawable/bg_header">
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="NGOSHA CONTACT CLEANER" android:textColor="#FFFFFF" android:textSize="25sp" android:textStyle="bold"/>
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Safisha • Panga • Hifadhi • Simu Safi" android:textColor="#D9F5EA" android:textSize="14sp"/>
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Ngosha Multimedia" android:textColor="#F2C35B" android:textStyle="bold"/>
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="NGOSHA DUPLICATES REMOVER" android:textColor="#FFFFFF" android:textSize="24sp" android:textStyle="bold"/>
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Smart • Clean • Fast" android:textColor="#F2C35B" android:textSize="15sp" android:textStyle="bold"/>
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Safisha simu yako bila kupoteza kilicho muhimu" android:textColor="#D9F5EA" android:textSize="14sp"/>
  </LinearLayout>
- <TextView android:id="@+id/noticeText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="15dp" android:background="@drawable/bg_notice" android:text="✓  USIRI NA USALAMA\nContacts zako zinabaki ndani ya simu. Tengeneza backup kabla ya usafishaji mkubwa." android:textColor="#075A43" android:textStyle="bold"/>
- <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingLeft="14dp" android:paddingRight="14dp">
-  <TextView android:id="@+id/totalText" style="@style/StatCard" android:background="@drawable/bg_card_blue" android:text="0\nContacts"/>
+ <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="16dp" android:background="@drawable/bg_white_card" android:text="Tayari kufanya Smart Scan." android:textColor="#172033" android:textSize="16sp" android:textStyle="bold"/>
+ <ProgressBar android:id="@+id/progressBar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="9dp" android:layout_marginHorizontal="14dp" android:max="100" android:visibility="gone"/>
+ <TextView android:id="@+id/progressText" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="7dp" android:text="" android:textColor="#075A43" android:textStyle="bold"/>
+ <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingHorizontal="14dp">
+  <TextView android:id="@+id/totalText" style="@style/StatCard" android:background="@drawable/bg_card_blue" android:text="0\nScanned"/>
   <TextView android:id="@+id/duplicateText" style="@style/StatCard" android:layout_marginLeft="8dp" android:background="@drawable/bg_card_red" android:text="0\nDuplicates" android:textColor="#A11F28"/>
-  <TextView android:id="@+id/deletedText" style="@style/StatCard" android:layout_marginLeft="8dp" android:background="@drawable/bg_card_green" android:text="0\nZimeondolewa" android:textColor="#087447"/>
+  <TextView android:id="@+id/deletedText" style="@style/StatCard" android:layout_marginLeft="8dp" android:background="@drawable/bg_card_green" android:text="0 MB\nRecoverable" android:textColor="#087447"/>
  </LinearLayout>
- <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="15dp" android:background="@drawable/bg_white_card" android:text="Bonyeza KAGUA CONTACTS kuanza." android:textColor="#172033" android:textSize="16sp"/>
- <ProgressBar android:id="@+id/progressBar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:layout_marginLeft="14dp" android:layout_marginRight="14dp" android:max="100" android:visibility="gone"/>
+ <Button android:id="@+id/scanButton" android:layout_width="match_parent" android:layout_height="60dp" android:layout_margin="14dp" android:text="⚡  SMART SCAN" android:textSize="17sp"/>
+ <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="14dp" android:text="SCAN CATEGORIES" android:textStyle="bold" android:textColor="#075A43" android:textSize="14sp"/>
  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="14dp">
-  <Button android:id="@+id/scanButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:text="KAGUA CONTACTS"/>
-  <Button android:id="@+id/cleanButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1.2" android:layout_marginLeft="8dp" android:text="SAFISHA DUPLICATES" android:enabled="false"/>
+  <Button android:id="@+id/contactsButton" android:layout_width="0dp" android:layout_height="62dp" android:layout_weight="1" android:text="👥 Contacts"/>
+  <Button android:id="@+id/photosButton" android:layout_width="0dp" android:layout_height="62dp" android:layout_weight="1" android:layout_marginLeft="7dp" android:text="🖼 Photos"/>
  </LinearLayout>
- <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
-  <TextView android:id="@+id/detailsText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="14dp" android:layout_marginRight="14dp" android:padding="16dp" android:background="@drawable/bg_white_card" android:text="Matokeo ya duplicates yataonekana hapa." android:textColor="#374151" android:textSize="14sp"/>
- </ScrollView>
- <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="12dp" android:text="Ngosha Multimedia  |  Unlock the Magic  |  © 2026" android:textColor="#65736D"/>
-</LinearLayout>
+ <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingHorizontal="14dp">
+  <Button android:id="@+id/videosButton" android:layout_width="0dp" android:layout_height="62dp" android:layout_weight="1" android:text="▶ Videos"/>
+  <Button android:id="@+id/audioButton" android:layout_width="0dp" android:layout_height="62dp" android:layout_weight="1" android:layout_marginLeft="7dp" android:text="♫ Audio"/>
+ </LinearLayout>
+ <TextView android:id="@+id/detailsText" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="150dp" android:layout_margin="14dp" android:padding="16dp" android:background="@drawable/bg_white_card" android:text="Matokeo ya scan yataonekana hapa." android:textColor="#374151" android:textSize="14sp"/>
+ <Button android:id="@+id/cleanButton" android:layout_width="match_parent" android:layout_height="58dp" android:layout_marginHorizontal="14dp" android:text="SAFISHA ZILIZOCHAGULIWA" android:enabled="false"/>
+ <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="18dp" android:text="Ngosha Multimedia  •  Unlock the Magic  •  © 2026" android:textColor="#65736D"/>
+</LinearLayout></ScrollView>
