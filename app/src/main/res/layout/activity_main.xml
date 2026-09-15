@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
- android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#F5F8F6">
- <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#075A43" android:padding="22dp">
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🧹  Ngosha Contact Cleaner" android:textSize="27sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Safisha • Panga • Hifadhi • Simu Safi" android:textSize="15sp" android:textColor="#E6FFF6"/>
-  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Ngosha Multimedia" android:textStyle="bold" android:textColor="#F3C75F"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#F4F7F5">
+ <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="22dp" android:background="@drawable/bg_header">
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="NGOSHA CONTACT CLEANER" android:textColor="#FFFFFF" android:textSize="25sp" android:textStyle="bold"/>
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Safisha • Panga • Hifadhi • Simu Safi" android:textColor="#D9F5EA" android:textSize="14sp"/>
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Ngosha Multimedia" android:textColor="#F2C35B" android:textStyle="bold"/>
  </LinearLayout>
- <TextView android:id="@+id/noticeText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="15dp" android:background="#E7F8EE" android:text="✓ Usiri na Usalama wako ni muhimu kwetu\nTunapendekeza backup kabla ya kusafisha." android:textColor="#075A43" android:textStyle="bold"/>
+ <TextView android:id="@+id/noticeText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="15dp" android:background="@drawable/bg_notice" android:text="✓  USIRI NA USALAMA\nContacts zako zinabaki ndani ya simu. Tengeneza backup kabla ya usafishaji mkubwa." android:textColor="#075A43" android:textStyle="bold"/>
  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingLeft="14dp" android:paddingRight="14dp">
-  <TextView android:id="@+id/totalText" android:layout_width="0dp" android:layout_height="92dp" android:layout_weight="1" android:gravity="center" android:background="#EAF3FF" android:text="0\nContacts" android:textStyle="bold" android:textSize="17sp" android:textColor="#172033"/>
-  <TextView android:id="@+id/duplicateText" android:layout_width="0dp" android:layout_height="92dp" android:layout_weight="1" android:layout_marginLeft="8dp" android:gravity="center" android:background="#FDEBEC" android:text="0\nDuplicates" android:textStyle="bold" android:textSize="17sp" android:textColor="#A11F28"/>
-  <TextView android:id="@+id/deletedText" android:layout_width="0dp" android:layout_height="92dp" android:layout_weight="1" android:layout_marginLeft="8dp" android:gravity="center" android:background="#E8F7EE" android:text="0\nZimeondolewa" android:textStyle="bold" android:textSize="16sp" android:textColor="#087447"/>
+  <TextView android:id="@+id/totalText" style="@style/StatCard" android:background="@drawable/bg_card_blue" android:text="0\nContacts"/>
+  <TextView android:id="@+id/duplicateText" style="@style/StatCard" android:layout_marginLeft="8dp" android:background="@drawable/bg_card_red" android:text="0\nDuplicates" android:textColor="#A11F28"/>
+  <TextView android:id="@+id/deletedText" style="@style/StatCard" android:layout_marginLeft="8dp" android:background="@drawable/bg_card_green" android:text="0\nZimeondolewa" android:textColor="#087447"/>
  </LinearLayout>
- <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="14dp" android:background="#FFFFFF" android:text="Bonyeza KAGUA CONTACTS kuanza." android:textSize="16sp" android:textColor="#172033"/>
- <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingLeft="14dp" android:paddingRight="14dp">
-  <Button android:id="@+id/scanButton" android:layout_width="0dp" android:layout_height="55dp" android:layout_weight="1" android:text="KAGUA CONTACTS"/>
-  <Button android:id="@+id/cleanButton" android:layout_width="0dp" android:layout_height="55dp" android:layout_weight="1" android:layout_marginLeft="8dp" android:text="SAFISHA DUPLICATES" android:enabled="false"/>
+ <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="14dp" android:padding="15dp" android:background="@drawable/bg_white_card" android:text="Bonyeza KAGUA CONTACTS kuanza." android:textColor="#172033" android:textSize="16sp"/>
+ <ProgressBar android:id="@+id/progressBar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:layout_marginLeft="14dp" android:layout_marginRight="14dp" android:max="100" android:visibility="gone"/>
+ <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="14dp">
+  <Button android:id="@+id/scanButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:text="KAGUA CONTACTS"/>
+  <Button android:id="@+id/cleanButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1.2" android:layout_marginLeft="8dp" android:text="SAFISHA DUPLICATES" android:enabled="false"/>
  </LinearLayout>
- <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp">
-  <TextView android:id="@+id/detailsText" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:text="Duplicates zitaonekana hapa." android:textSize="14sp" android:textColor="#374151"/>
+ <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+  <TextView android:id="@+id/detailsText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="14dp" android:layout_marginRight="14dp" android:padding="16dp" android:background="@drawable/bg_white_card" android:text="Matokeo ya duplicates yataonekana hapa." android:textColor="#374151" android:textSize="14sp"/>
  </ScrollView>
- <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:gravity="center" android:text="Ngosha Multimedia  |  Unlock the Magic  |  © 2026" android:textColor="#66736E"/>
+ <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="12dp" android:text="Ngosha Multimedia  |  Unlock the Magic  |  © 2026" android:textColor="#65736D"/>
 </LinearLayout>
